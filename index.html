@@ -325,28 +325,32 @@ function next(choice) {
   const q = questions[current];
   const answer = choice === "yes" ? q.yes : q.no;
 
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify({
-      question: q.q,
-      answer: answer
-    })
-  }).catch(error => console.error(error));
-
-  if (current === questions.length - 1) {
-    quiz.classList.add("hidden");
-    finish.classList.remove("hidden");
-    celebrate();
-    return;
-  }
-
-  current++;
-  showQuestion();
+  
 }
+
+function runAway() {
+  const area = document.getElementById("arena");
+  const no = document.getElementById("no");
+
+  const maxX = area.clientWidth - no.offsetWidth;
+  const maxY = area.clientHeight - no.offsetHeight;
+
+  const x = Math.random() * Math.max(0, maxX);
+  const y = Math.random() * Math.max(0, maxY);
+
+  no.style.left = x + "px";
+  no.style.right = "auto";
+  no.style.top = y + "px";
+}
+
+no.addEventListener("pointerenter", (e) => {
+  if (e.pointerType === "mouse") runAway();
+});
+
+no.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  runAway();
+}, { passive: false });
 
 function createHeart() {
   const heart = document.createElement("div");
