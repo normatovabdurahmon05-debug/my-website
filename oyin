@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reaction Master</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:linear-gradient(135deg,#10002b,#240046,#3c096c);
+ color:white;font-family:Arial;text-align:center;
+ min-height:100vh;padding:20px;
+}
+.container{max-width:500px;margin:auto}
+h1{font-size:34px;color:#e0aaff;text-shadow:0 0 15px #c77dff}
+.card{
+ background:#ffffff12;border:1px solid #ffffff30;
+ border-radius:22px;padding:22px;margin-top:20px;
+ box-shadow:0 0 30px #9d4edd33;
+}
+button{
+ border:0;border-radius:15px;padding:17px;
+ font-size:18px;font-weight:bold;cursor:pointer;
+ transition:.2s;
+}
+button:active{transform:scale(.94)}
+.start{background:#c77dff;color:white;width:100%}
+.colors{
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:13px;margin-top:25px
+}
+.color{
+ height:115px;border-radius:20px;
+ border:3px solid #ffffff55;
+}
+#question{font-size:25px;font-weight:bold}
+.stats{display:flex;justify-content:space-around}
+.stat{font-size:17px}
+#message{font-size:19px;min-height:28px;margin:15px}
+.red{background:#ff3b5c}
+.blue{background:#3a86ff}
+.green{background:#06d6a0}
+.yellow{background:#ffbe0b}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>⚡ REACTION MASTER</h1>
+<p>Tezligingni sinab ko‘r!</p>
+
+<div class="card">
+<div class="stats">
+<div class="stat">🏆 Ball: <b id="score">0</b></div>
+<div class="stat">⏱️ Vaqt: <b id="time">30</b></div>
+<div class="stat">👑 Rekord: <b id="record">0</b></div>
+</div>
+</div>
+
+<div class="card">
+<p id="question">Tayyor bo‘lsang boshlaymiz!</p>
+<div id="message">Boshlash tugmasini bos!</div>
+<button class="start" onclick="startGame()">BOSHLASH 🚀</button>
+
+<div class="colors">
+<button class="color red" onclick="choose('red')"></button>
+<button class="color blue" onclick="choose('blue')"></button>
+<button class="color green" onclick="choose('green')"></button>
+<button class="color yellow" onclick="choose('yellow')"></button>
+</div>
+</div>
+</div>
+
+<script>
+let score=0,time=30,active=false;
+let answer="";
+let timer;
+let record=Number(localStorage.getItem("reactionRecord"))||0;
+
+document.getElementById("record").textContent=record;
+
+function startGame(){
+ clearInterval(timer);
+ score=0;time=30;active=true;
+ document.getElementById("score").textContent=score;
+ document.getElementById("time").textContent=time;
+ document.getElementById("message").textContent="Omad! 🔥";
+ nextQuestion();
+
+ timer=setInterval(()=>{
+ time--;
+ document.getElementById("time").textContent=time;
+ if(time<=0) endGame();
+ },1000);
+}
+
+function nextQuestion(){
+ let colors=["red","blue","green","yellow"];
+ answer=colors[Math.floor(Math.random()*4)];
+ let names={
+ red:"QIZIL",blue:"KO‘K",
+ green:"YASHIL",yellow:"SARIQ"
+ };
+ document.getElementById("question").textContent=
+ "TOP: "+names[answer];
+}
+
+function choose(color){
+ if(!active)return;
+
+ if(color===answer){
+ score+=10;
+ document.getElementById("message").textContent="TO‘G‘RI! +10 🔥";
+ }else{
+ score=Math.max(0,score-5);
+ document.getElementById("message").textContent="XATO! -5 😅";
+ }
+ document.getElementById("score").textContent=score;
+ nextQuestion();
+}
+
+function endGame(){
+ active=false;
+ clearInterval(timer);
+ if(score>record){
+ record=score;
+ localStorage.setItem("reactionRecord",record);
+ document.getElementById("record").textContent=record;
+ }
+ document.getElementById("question").textContent="O‘YIN TUGADI!";
+ document.getElementById("message").textContent=
+ "Natijang: "+score+" ball! 🏆";
+}
+</script>
+</body>
+</html>
